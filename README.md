@@ -2,35 +2,46 @@
 
 **Your Autonomous DevOps & Documentation Partner.**
 
-RepoRanger is an agentic AI system built with **LangChain** and **LangGraph**. It doesn't just chat with your code; it actively maintains it. It acts as a Senior Engineer that lives in your repository, handling documentation, code quality, git operations, and system visualization autonomously.
+RepoRanger is an agentic AI system built with **LangGraph**. It acts as a Senior Engineer that lives inside your repository and continuously handles documentation, code quality, git operations, and system visualization. See `docs/SYSTEM_DESIGN.md` for the master specification.
 
-## 🧠 Skills (Agents)
+## 💡 Core Philosophy
 
-RepoRanger operates using a multi-agent orchestration graph. Each node in the graph represents a specialized skill:
+RepoRanger is not a "chat with code" interface; it is an active maintainer focused on stopping Rot & Drift (docs diverging from code, architecture decay, and silent tech debt). It keeps context light through artifact-based memory and combines deterministic analysis with generative reasoning.
 
-### 1. The Contextual Scribe ✍️
-* **Role:** Documentation & PR Storytelling.
-* **Capability:** Analyzes the *intent* behind code changes, not just the diff. Generates rich PR descriptions, updates `CHANGELOG.md` based on semantic analysis, and ensures documentation stays in sync with code logic.
+## 🧱 Architecture Overview
 
-### 2. The Code Steward 🛡️
-* **Role:** Proactive Maintenance.
-* **Capability:** Audits dependencies for security risks, identifies dead code, and enforces code style. It can auto-fix linting errors and push the clean-up commits directly to your branch.
+| Layer            | Details                                                                                             |
+|------------------|-----------------------------------------------------------------------------------------------------|
+| Orchestrator     | LangGraph state machine with a shared clipboard (`RepoState`)                                        |
+| Intelligence     | Gemini 1.5 Pro / GPT-4o for reasoning, Python `ast` module for metrics                              |
+| Toolbelt         | PythonCodeParser (analysis), GitOps (safe git), MermaidGenerator (visuals)                           |
+| Persistence      | Artifacts saved to `.reporanger_workspace` via `workspace.py`                                       |
 
-### 3. The Git Tactician ⚔️
-* **Role:** Complex Version Control.
-* **Capability:** Handles "messy" git operations. Capable of semantic merge conflict resolution, smart cherry-picking across branches, and cleaning up stale feature branches safely.
+The workflow is linear for v1: Architect → Steward → Tactician → Scribe → END. Each agent reads and writes artifacts to keep the LLM context tight.
 
-### 4. The Visual Architect 📐
-* **Role:** Dynamic Visualization.
-* **Capability:** Auto-generates Mermaid.js diagrams for class hierarchies, dependency graphs, and logic flows. If the code structure changes, the diagrams in your docs update automatically.
+## 🧠 Agent Swarm
 
-## 🛠️ Tech Stack
+1. **Visual Architect (🏛️)** – Runs on PRs or scheduled audits. Builds dependency graphs and complexity heatmaps with Mermaid.js.
+2. **Code Steward (🛡️)** – Audits only the changed Python files, computes AST metrics, detects dead code, and drafts refactors when thresholds are breached.
+3. **Git Tactician (⚔️)** – Reacts to Steward artifacts by branching, staging refactor plans, and preparing safe commits for human review.
+4. **Contextual Scribe (✍️)** – Reads diffs and artifacts to write PR narratives and update changelogs focusing on the "why" behind changes.
 
-* **Orchestration:** LangGraph (Stateful multi-agent workflows)
-* **Framework:** LangChain
-* **LLM:** GPT-4o / Claude 3.5 Sonnet
-* **Git Operations:** GitPython
-* **Parsing:** Tree-sitter / AST
+## 🛠️ Tooling
+
+- **PythonCodeParser:** Deterministic AST parser that resolves imports, calculates cyclomatic complexity, nesting, impact graphs, and unused imports.
+- **MermaidGenerator:** Converts parser output into dependency/class diagrams and complexity heatmaps.
+- **GitOps:** GitPython wrapper that handles unborn HEAD repos, safe branching, diffs, and commits for the Tactician and Scribe.
+
+## 📊 Workflow
+
+```
+START
+  Architect   -> saves diagrams (.mmd artifacts)
+  Steward     -> audits diffs, emits issue report + refactor plans
+  Tactician   -> branches & commits refactor artifacts
+  Scribe      -> drafts PR narratives & changelog updates
+END
+```
 
 ## 🚀 Getting Started
 
@@ -64,6 +75,8 @@ RepoRanger operates using a multi-agent orchestration graph. Each node in the gr
     ```bash
     python main.py
     ```
+
+The run will execute the full LangGraph pipeline, printing each agent's progress and depositing artifacts into `.reporanger_workspace/`.
 
 ## 🤝 Contributing
 Contributions are welcome! Please ensure that any PR includes updated tests.

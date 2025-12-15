@@ -25,23 +25,34 @@ def scribe_node(state: RepoState) -> RepoState:
     if not diff:
         return {"messages": [HumanMessage(content="Scribe found no changes to document.")]}
 
-    # 2. Call LLM (Creative Mode)
-    # We use a 'creative' profile if available in config, else default
-    llm = get_llm("creative") 
-    
-    prompt = [
-        SystemMessage(content=SCRIBE_SYSTEM_PROMPT),
-        HumanMessage(content=f"""
-        Generate a Pull Request description for these changes:
-        
-        {diff[:8000]} # Truncate to prevent token overflow if huge
-        """)
-    ]
-    
-    response = llm.invoke(prompt)
+    # 2. Call LLM (Creative Mode) with graceful fallback when keys are missing
+    response_text = ""
+    try:
+        llm = get_llm("creative")
+        prompt = [
+            SystemMessage(content=SCRIBE_SYSTEM_PROMPT),
+            HumanMessage(content=f"""
+            Generate a Pull Request description for these changes:
+            
+            {diff[:8000]} # Truncate to prevent token overflow if huge
+            """)
+        ]
+        response = llm.invoke(prompt)
+        response_text = response.content
+    except Exception as exc:
+        print(f"    [Warning] Scribe could not reach LLM: {exc}")
+        response_text = (
+            "# RepoRanger PR Summary\n"
+            "LLM output unavailable (missing API key or offline). "
+            "Here is the raw diff context for manual documentation:\n\n"
+            "```\n"
+            f"{diff[:4000]}\n"
+            "```"
+        )
+        response = HumanMessage(content=response_text)
     
     # 3. Save Artifact
-    doc_path = save_artifact(response.content, "md")
+    doc_path = save_artifact(response_text, "md")
     
     print("--- ✍️  Scribe: Documentation Generated ---")
 

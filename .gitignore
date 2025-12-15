@@ -10,3 +10,7 @@ __pycache__
 agent_1_demo.py
 tool_1_demo.py
 tool_2_demo.py
+
+# RepoRanger build/run artifacts
+.reporanger_workspace/
+src/reporanger.egg-info/

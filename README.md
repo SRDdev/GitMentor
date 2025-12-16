@@ -29,7 +29,7 @@ The workflow is linear for v1: Architect → Steward → Tactician → Scribe �
 ## 🛠️ Tooling
 
 - **PythonCodeParser:** Deterministic AST parser that resolves imports, calculates cyclomatic complexity, nesting, impact graphs, and unused imports.
-- **MermaidGenerator:** Converts parser output into dependency/class diagrams and complexity heatmaps.
+- **MermaidGenerator:** Converts parser output into dependency/class diagrams and complexity heatmaps (see `docs/DIAGRAMS.md` for usage).
 - **GitOps:** GitPython wrapper that handles unborn HEAD repos, safe branching, diffs, and commits for the Tactician and Scribe.
 
 ## 📊 Workflow
@@ -83,3 +83,4 @@ Contributions are welcome! Please ensure that any PR includes updated tests.
 
 ## 📄 License
 MIT
+# Test change

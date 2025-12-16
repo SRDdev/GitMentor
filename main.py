@@ -247,8 +247,8 @@ def _handle_commit_output(state):
 
 
 def _handle_pr_output(state, target_branch):
-    """Handle PR mode output"""
-    # Depending on graph output structure, extract state
+    """Handle PR mode output with GitHub CLI integration"""
+    # LangGraph state extraction
     actual_state = state.get('scribe', state) if isinstance(state, dict) else state
     artifacts = actual_state.get("artifacts", [])
     
@@ -258,16 +258,24 @@ def _handle_pr_output(state, target_branch):
     )
     
     if pr_artifact and os.path.exists("PR_Document.md"):
+        # Attempt to get a title from Scribe metadata, fallback to branch name
+        suggested_title = actual_state.get("pr_title", "PR: Update from RepoRanger")
+        current_branch = actual_state.get("source_branch", "$(git branch --show-current)")
+        
         console.print(Panel(
-            "[bold green]✅ PR documentation generated![/bold green]\n\n"
-            "Next steps:\n"
-            "  1. Review: [cyan]cat PR_Document.md[/cyan]\n"
-            "  2. Push: [cyan]git push origin $(git branch --show-current)[/cyan]\n"
-            f"  3. Create PR on GitHub: current → [cyan]{target_branch}[/cyan]",
+            f"[bold green]✅ PR documentation generated![/bold green]\n\n"
+            f"[bold white]Step 1: Review Changes[/bold white]\n"
+            f"  [cyan]cat PR_Document.md[/cyan]\n\n"
+            f"[bold white]Step 2: Push to Origin[/bold white]\n"
+            f"  [cyan]git push origin {current_branch}[/cyan]\n\n"
+            f"[bold white]Step 3: Create Pull Request[/bold white]\n"
+            f"  [cyan]gh pr create --base {target_branch} --title '{suggested_title}' --body-file PR_Document.md[/cyan]\n\n"
+            f"[dim]Note: Ensure you have the GitHub CLI (gh) installed and authenticated.[/dim]",
             border_style="green",
             title="PR Documentation Ready"
         ))
-
+    else:
+        console.print("\n[red]❌ PR documentation could not be found in artifacts.[/red]")
 
 if __name__ == "__main__":
     main()

@@ -1,11 +1,4 @@
-feat: add smart-branch feature
+chore: general improvements and rename file
 
-Adds the `smart-branch` feature to streamline branch naming
-and creation. This feature leverages AI to suggest branch
-names based on the user's intent.
-
-- Introduces a `branch` subcommand in `cli.py` with options
-  for intent, type, and skipping the initial commit.
-- Implements branch name generation and type detection logic
-  in `src/tools/branch_manager.py`.
+- Renames `COMMIT_MESSAGE.txt` to `PR_Document.md` for clarity.
 - Updates `.gitignore` to exclude temporary files.

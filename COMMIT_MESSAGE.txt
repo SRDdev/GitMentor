@@ -1,6 +1,11 @@
-docs: add test section and MermaidGenerator details to README
+feat: add smart-branch feature
 
-This commit updates the README to include:
-- A test section to ensure users create tests for PRs
-- More information on the MermaidGenerator, including a link to
-  `docs/DIAGRAMS.md` for usage instructions.
+Adds the `smart-branch` feature to streamline branch naming
+and creation. This feature leverages AI to suggest branch
+names based on the user's intent.
+
+- Introduces a `branch` subcommand in `cli.py` with options
+  for intent, type, and skipping the initial commit.
+- Implements branch name generation and type detection logic
+  in `src/tools/branch_manager.py`.
+- Updates `.gitignore` to exclude temporary files.

@@ -1,16 +1,26 @@
-# RepoRanger
+<p align="center">
+  <img src="assets/banner.png" alt="GitMentor Banner" width="100%">
+</p>
+
+# GitMentor
+
+<p align="center">
+  <img src="https://img.shields.io/badge/LangGraph-Orchestrated-blue">
+  <img src="https://img.shields.io/badge/AI-Gemini%202.0-orange">
+  <img src="https://img.shields.io/badge/License-MIT-green">
+</p>
 
 **Autonomous Code Steward & DevOps Orchestrator**
 
-RepoRanger is a multi-agent system built on **LangGraph**, designed to bridge the gap between source code and its surrounding ecosystem (documentation, quality standards, and CI/CD). It operates as a Principal Engineer within your repository, performing deterministic static analysis combined with generative reasoning to ensure your project remains healthy, documented, and architecturally sound.
+GitMentor is a multi-agent system built on **LangGraph**, designed to bridge the gap between source code and its surrounding ecosystem (documentation, quality standards, and CI/CD). It operates as a Principal Engineer within your repository, performing deterministic static analysis combined with generative reasoning to ensure your project remains healthy, documented, and architecturally sound.
 
 ---
 
 ## System Vision
-RepoRanger utilizes an artifact-driven workflow to maintain a "Compressed Context" model. Rather than feeding an entire codebase into an LLM, RepoRanger's agents extract specific metrics and structures, passing only relevant artifacts downstream. This ensures high precision, lower token costs, and superior reasoning.
+GitMentor utilizes an artifact-driven workflow to maintain a "Compressed Context" model. Rather than feeding an entire codebase into an LLM, GitMentor's agents extract specific metrics and structures, passing only relevant artifacts downstream. This ensures high precision, lower token costs, and superior reasoning.
 
 ```mermaid
-graph TD
+graph LR
     subgraph Analysis_Phase
         A[Architect] -->|Dependency Maps| S[Steward]
     end
@@ -21,7 +31,7 @@ graph TD
     subgraph Finalization
         Sc -->|README/PR Sync| END((Success))
     end
-    
+
     style A fill:#f4f4f4,stroke:#2196f3,stroke-width:2px
     style S fill:#f4f4f4,stroke:#4caf50,stroke-width:2px
     style T fill:#f4f4f4,stroke:#f44336,stroke-width:2px
@@ -33,42 +43,41 @@ graph TD
 | Layer | Technical Implementation |
 | --- | --- |
 | **Orchestration** | LangGraph State Machine with a shared `RepoState` clipboard. |
-| **Intelligence** | Google Gemini 1.5 Pro / Flash for generative synthesis. |
+| **Intelligence** | Google Gemini 2.0 Flash for generative synthesis. |
 | **Deterministic Engine** | Python `ast` module for cyclomatic complexity and dependency resolution. |
-| **Persistence** | Structured workspace in `.reporanger_workspace` managed via `workspace.py`. |
+| **Persistence** | Structured workspace in `.gitmentor_workspace` managed via `workspace.py`. |
 | **Visualization** | Automated Mermaid.js generation for live system mapping. |
 
 ---
 
 ## Agent Swarm Roles
 ### 🏛️ Visual Architect
-
-The Architect is responsible for the "Big Picture." It performs full-repo indexing to generate system-wide dependency graphs and complexity heatmaps.
+Responsible for the "Big Picture." Performs full-repo indexing to generate system-wide dependency graphs and complexity heatmaps.
 
 * **Deliverables:** `dependency_graph.mmd`, `complexity_heatmap.mmd`, `architecture_overview.md`.
 
 ### 🛡️ Code Steward
-The Steward acts as the first line of defense against technical debt. It computes AST metrics, detects unreachable code, and audits changed files against complexity thresholds.
+The first line of defense against technical debt. Computes AST metrics, detects unreachable code, and audits changed files against complexity thresholds.
 
 * **Deliverables:** `code_quality_report.md`, `refactor_plan.json`.
 
 ### ⚔️ Git Tactician
-The Tactician translates analysis into action. It manages the Git lifecycle by creating semantic branches, staging changes, and ensuring the repository remains in a safe state.
+Translates analysis into action. Manages the Git lifecycle by creating semantic branches, staging changes, and ensuring the repository remains in a safe state.
 
 * **Deliverables:** `git_workflow.md`, automated branch creation.
 
 ### ✍️ Contextual Scribe
-The Scribe ensures documentation never drifts from reality. It synthesizes diffs and agent artifacts into high-density PR narratives and performs the "Master README Sync."
+Ensures documentation never drifts from reality. Synthesizes diffs and artifacts into high-density PR narratives and performs the "Master README Sync."
 
 * **Deliverables:** `PR_Document.md`, `README.md` updates, `COMMIT_MESSAGE.txt`.
 
 ---
 
-## System Health & Documentation Status 
-RepoRanger automatically updates this section during `full` execution mode to reflect the current state of the repository.
+## System Health & Documentation Status
+GitMentor automatically updates this section during `full` execution mode to reflect the current state of the repository.
 
 ### Recent Code Quality Audit* **Status:** Analysis Pending
-* **Audit Timestamp:** 2025-12-17 03:45 UTC
+* **Audit Timestamp:** 2025-12-17 04:15 UTC
 * **Health Metric:** No critical blockers detected in the core logic.
 
 ### Live Architecture
@@ -76,45 +85,79 @@ The following diagram represents the real-time module relationships within this 
 
 ```mermaid
 graph TD
-    Empty["Execute 'rr full' to generate dependency map"]
+    Empty["Execute 'gm --mode full' to generate dependency map"]
 
 ```
 
-> Tip: If the diagram above is empty, run `python main.py --mode full` to trigger the Architect.
+> Tip: If the diagram above is empty, run `gm --mode full` to trigger the Architect.
 
 ---
 
 ## 🚀 Getting Started
-RepoRanger is designed to be set up in under 5 minutes.
-
 ### 1. Local Installation
 ```bash
-# Clone the repository
-git clone https://github.com/SRDdev/RepoRanger.git
-cd RepoRanger
+# Clone the renamed repository
+git clone https://github.com/SRDdev/GitMentor.git
+cd GitMentor
 
-# Install the package in editable mode
-pip install .
+# Install in editable mode to activate 'gm' command
+pip install -e .
 
 # Setup your environment
 echo "GOOGLE_API_KEY=your_gemini_api_key_here" > .env
+
 ```
 
-### 2. Usage Commands
+## 2. Usage Commands
+
 | Command | Action |
 | --- | --- |
-| `rr branch -m "Intent"` | Create a semantic branch based on your goal. |
-| `rr full` | Perform a full system audit and update README diagrams. |
-| `rr commit` | Generate a professional Conventional Commit message. |
+| **Branching** |  |
+| `gm branch -m "Intent"` | Creates a semantic branch name based on your goal and switches to it. |
+| `gm branch -m "Intent" -t fix` | Creates a branch while forcing a specific type (`feat`, `fix`, `refactor`, etc.). |
+| **Analysis & Docs** |  |
+| `gm --mode full` | Performs a full system audit, updates README diagrams, and generates reports. |
+| `gm --mode pr` | Generates a high-density `PR_Document.md` comparing current work to the target branch. |
+| `gm --mode docs` | Refreshes only the technical documentation and system specifications. |
+| **Commit Workflow** |  |
+| `gm --mode commit` | Analyzes staged changes and generates a professional Conventional Commit message. |
+| `gm --commit-intent "Context"` | Provides the AI with specific context to refine the generated commit message. |
+| **Configuration** |  |
+| `gm --target-branch main` | Sets the base branch for diffing and analysis (default is `main`). |
+| `gm --help` | Displays the full CLI manual and available agent flags. |
 
 ---
 
+## Recommended Workflow
+
+To get the most out of **GitMentor**, follow this professional engineering loop:
+
+1. **Initialize**:  
+   `gm branch -m "implement oauth login"`
+
+2. **Develop**:  
+   (Write your code changes)
+
+3. **Stage**:  
+   `git add .`
+
+4. **Describe**:  
+   `gm --mode commit` → `git commit -F COMMIT_MESSAGE.txt`
+
+5. **Finalize**:  
+   `gm --mode full`  
+   *(Ensures README diagrams are updated before pushing)*
+
+6. **Submit**:  
+   `git push origin <branch>`
+
+---
+
+
 ## 🤖 GitHub Actions Integration
-To enable RepoRanger to review your Pull Requests automatically, add your `GOOGLE_API_KEY` to your GitHub Repository Secrets and ensure the `.github/workflows/reporanger-analysis.yml` is present.
+To enable GitMentor to review your Pull Requests automatically, add your `GOOGLE_API_KEY` to your GitHub Repository Secrets and ensure the `.github/workflows/gitmentor.yml` is present.
 
 ### Required Permissions
-RepoRanger requires the following permissions in your workflow to post comments and analyze diffs:
-
 ```yaml
 permissions:
   contents: read
@@ -128,11 +171,11 @@ permissions:
 ## 🤝 Contributing
 We welcome contributions that improve agent reasoning or tool deterministic accuracy.
 
-1. **Branch:** Use `python main.py branch --intent "Your feature"`
-2. **Verify:** Run `python main.py --mode full` to ensure no regression in quality.
-3. **Submit:** Ensure `PR_Document.md` is attached to your Pull Request.
+1. **Branch:** Use `gm branch --intent "Your feature"`
+2. **Verify:** Run `gm --mode full` to ensure no regression in quality.
+3. **Submit:** Ensure `PR_Document.md` is generated and attached to your PR.
 
 ---
 
 ## 📄 License
-Licensed under the **MIT License**. Created and maintained by the RepoRanger Contributors.
+Licensed under the **MIT License**. Created and maintained by the GitMentor Contributors.

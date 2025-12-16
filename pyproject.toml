@@ -1,11 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "reporanger"
-version = "0.1.0"
-description = "Autonomous multi-agent DevOps system powered by LangGraph"
+name = "gitmentor"
+version = "1.0.0"
+description = "Autonomous Git Agent & Code Steward powered by LangGraph"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-  { name = "RepoRanger Contributors" }
+  { name = "GitMentor Contributors" }
 ]
 license = { text = "MIT" }
 dependencies = [
@@ -25,10 +29,10 @@ dev = [
   "black>=24.8.0"
 ]
 
-[tool.setuptools]
-# This ensures setuptools finds your source code correctly
-packages = { find = { where = ["."] } }
+[project.scripts]
+gm = "main:main"
+gitmentor = "main:main"
 
-[build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.setuptools]
+py-modules = ["main"]
+packages = { find = { where = ["."] } }

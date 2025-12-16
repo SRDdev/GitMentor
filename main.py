@@ -1,4 +1,4 @@
-# main.py - RepoRanger Autonomous Code Steward
+# main.py - GitMentor Autonomous Code Steward
 import os
 import re
 import argparse
@@ -21,15 +21,18 @@ load_dotenv()
 
 def main():
     parser = argparse.ArgumentParser(
-        description="RepoRanger - Autonomous Code Steward",
+        description="GitMentor - Autonomous Code Steward",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Create smart branch
-  python main.py branch --intent "Refactor parser logic"
+  # Create smart branch based on intent
+  gm branch --intent "Refactor parser logic"
   
-  # Full analysis and README sync
-  python main.py --mode full --target-branch master
+  # Full analysis and AI README synchronization
+  gm --mode full --target-branch main
+  
+  # Generate a commit message for staged changes
+  gm --mode commit
         """
     )
     
@@ -37,7 +40,7 @@ Examples:
     
     # --- BRANCH COMMAND ---
     branch_parser = subparsers.add_parser('branch', help='Create semantic branch')
-    branch_parser.add_argument('--intent', '-m', required=True, help='Branch purpose')
+    branch_parser.add_argument('--intent', '-m', required=True, help='Branch purpose/intent')
     branch_parser.add_argument('--type', '-t', choices=[
         'feat', 'fix', 'hotfix', 'refactor', 'perf', 
         'docs', 'test', 'chore', 'style', 'ci', 'build'
@@ -45,15 +48,15 @@ Examples:
     branch_parser.add_argument('--no-commit', action='store_true', help='Skip initial commit')
 
     # --- GLOBAL ARGUMENTS ---
-    parser.add_argument("--target-branch", default="master", help="Base branch for comparison")
+    parser.add_argument("--target-branch", default="main", help="Base branch for comparison")
     parser.add_argument("--mode", choices=["full", "pr", "commit", "audit", "docs"], default="full")
     parser.add_argument("--commit-intent", help="Intent for generated commit message")
     
     args = parser.parse_args()
     
-    # Header
+    # Header - Rebranded to GitMentor
     console.print(Panel(
-        f"[bold blue]{cfg.get('project.name', 'RepoRanger').upper()}[/bold blue] | System Analysis Engine",
+        f"[bold blue]{cfg.get('project.name', 'GITMENTOR').upper()}[/bold blue] | Autonomous System Engine",
         border_style="blue"
     ))
     
@@ -106,7 +109,7 @@ def _execute_graph_mode(args, current_branch):
             final_state = event[node_name]
             _render_node_summary(node_name, final_state)
     
-    # Post-Processing: Sync Architecture to README if in Full mode
+    # Post-Processing: Sync Architecture and AI Analysis to README if in Full mode
     if args.mode == "full":
         _update_readme_with_analysis(final_state)
 
@@ -140,10 +143,10 @@ def _execute_commit_mode(args):
 # ========================================================================
 # README SYNCHRONIZATION
 # ========================================================================
+
 def _update_readme_with_analysis(state):
     """
-    Triggers Scribe's AI rewrite of the README.md.
-    This replaces the old manual marker logic with full AI generation.
+    Triggers Scribe's AI rewrite of the README.md based on current analysis.
     """
     from src.agents.scribe import _generate_enhanced_readme
     from src.tools.gitops import GitOps
@@ -160,21 +163,21 @@ def _update_readme_with_analysis(state):
         return
 
     try:
-        # Backup old readme just in case
+        # Backup old readme to prevent data loss
         if os.path.exists("README.md"):
             os.rename("README.md", "README.md.bak")
             
         with open("README.md", "w") as f:
             f.write(new_readme_content)
             
-        console.print("    [green]Success: README.md has been fully updated by Scribe.[/green]")
+        console.print("    [green]Success: README.md has been synchronized with GitMentor analysis.[/green]")
         
-        # Clean up backup if successful
+        # Clean up backup
         if os.path.exists("README.md.bak"):
             os.remove("README.md.bak")
             
     except Exception as e:
-        console.print(f"    [red]Error writing README: {e}[/red]")
+        console.print(f"    [red]Error updating README: {e}[/red]")
         if os.path.exists("README.md.bak"):
             os.rename("README.md.bak", "README.md")
 
@@ -197,7 +200,7 @@ def _render_node_summary(node_name: str, state: dict):
             content.append(f"Path:     [dim]{art['file_path']}[/dim]\n")
 
     if node_name == "steward" and issues:
-        content.append("[bold red]Analysis Findings:[/bold red]")
+        content.append("[bold red]Quality Audit Findings:[/bold red]")
         for issue in issues[:5]:
             sev = issue.get('severity', 'info').upper()
             content.append(f"  - [{sev}] {issue['file']}: {issue['message']}")
@@ -208,7 +211,7 @@ def _render_node_summary(node_name: str, state: dict):
         console.print(Panel("\n".join(content).strip(), title=f"Agent: {node_name.capitalize()}", border_style="dim"))
 
 def _handle_branch_creation(args):
-    """Manages Smart Branching flow"""
+    """Manages GitMentor Smart Branching flow"""
     console.print("[bold yellow]Mode: Smart Branch Creator[/bold yellow]")
     git_ops = GitOps(os.getcwd())
     manager = BranchManager(git_ops)
@@ -223,11 +226,12 @@ def _handle_branch_creation(args):
             )
             
             summary = [
-                f"Branch: [cyan]{branch_name}[/cyan]",
-                f"Type:   [yellow]{branch_type}[/yellow]",
+                f"Branch Created: [cyan]{branch_name}[/cyan]",
+                f"Branch Type:    [yellow]{branch_type}[/yellow]",
                 "",
+                "[bold]Suggested Commands:[/bold]",
                 "1. git add .",
-                "2. python main.py --mode commit"
+                "2. gm --mode commit"
             ]
             console.print(Panel("\n".join(summary), title="Success", border_style="green"))
         except Exception as e:
@@ -238,30 +242,30 @@ def _handle_commit_output(state):
     if any(a.get("type") == "commit_msg" for a in artifacts):
         console.print(Panel(
             "Commit message saved to: [cyan]COMMIT_MESSAGE.txt[/cyan]\n"
-            "Apply: [bold]git commit -F COMMIT_MESSAGE.txt[/bold]",
+            "Apply using: [bold]git commit -F COMMIT_MESSAGE.txt[/bold]",
             title="Success", border_style="green"
         ))
 
 def _handle_pr_output(state, target_branch):
-    """Final summary for deployment"""
+    """Final summary for PR creation via GitHub CLI"""
     git_ops = GitOps(os.getcwd())
     current_branch = git_ops.get_current_branch()
     
     try:
         gh_user = subprocess.check_output(["gh", "api", "user", "-q", ".login"], text=True).strip()
     except Exception:
-        gh_user = "YOUR_USERNAME"
+        gh_user = "YOUR_GITHUB_USERNAME"
 
     output = [
-        "[bold cyan]STEP 1: PUSH[/bold cyan]",
+        "[bold cyan]STEP 1: SYNC REMOTE[/bold cyan]",
         f"git push origin {current_branch}",
         "",
-        "[bold cyan]STEP 2: CREATE PR[/bold cyan]",
+        "[bold cyan]STEP 2: OPEN PULL REQUEST[/bold cyan]",
         f"gh pr create --base {target_branch} --head {gh_user}:{current_branch} --body-file PR_Document.md",
         "",
-        "[dim]Tip: Add --web if you face authentication issues.[/dim]"
+        "[dim]Note: Ensure GitHub CLI (gh) is authenticated.[/dim]"
     ]
-    console.print(Panel("\n".join(output), title="DEPLOYMENT STEPS", border_style="green"))
+    console.print(Panel("\n".join(output), title="DEPLOYMENT WORKFLOW", border_style="green"))
 
 if __name__ == "__main__":
     main()

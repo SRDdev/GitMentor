@@ -1,8 +1,8 @@
 # config.yaml
 
 project:
-  name: "RepoRanger"
-  version: "0.1.0"
+  name: "GitMentor"
+  version: "1.0.0"
 
 llm:
   provider: "google" # Switch to 'openai' or 'anthropic' easily here
@@ -22,5 +22,5 @@ llm:
     max_tokens: 4096
 
 paths:
-  workspace: "./.reporanger_workspace"
+  workspace: "./.gitmentor_workspace"
   repo_root: "./"

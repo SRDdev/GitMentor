@@ -1,5 +1,5 @@
 # RepoRanger Architecture Snapshot
-_Generated: 2025-12-17 03:41:45_
+_Generated: 2025-12-17 04:10:44_
 
 ## Dependency Graph
 ```mermaid
@@ -107,7 +107,7 @@ graph TD
     main_py["main.py (CC: 32)"]:::danger
     src___init___py["src/__init__.py (CC: 0)"]:::safe
     src_agents_architect_py["src/agents/architect.py (CC: 11)"]:::warning
-    src_agents_scribe_py["src/agents/scribe.py (CC: 44)"]:::danger
+    src_agents_scribe_py["src/agents/scribe.py (CC: 45)"]:::danger
     src_agents_steward_py["src/agents/steward.py (CC: 62)"]:::danger
     src_agents_tactician_py["src/agents/tactician.py (CC: 26)"]:::danger
     src_graph_py["src/graph.py (CC: 10)"]:::warning
@@ -116,7 +116,7 @@ graph TD
     src_tools_diagram_py["src/tools/diagram.py (CC: 41)"]:::danger
     src_tools_gitops_py["src/tools/gitops.py (CC: 33)"]:::danger
     src_tools_parser_py["src/tools/parser.py (CC: 190)"]:::danger
-    src_utils_config_py["src/utils/config.py (CC: 8)"]:::safe
+    src_utils_config_py["src/utils/config.py (CC: 13)"]:::warning
     src_utils_llm_py["src/utils/llm.py (CC: 5)"]:::safe
     src_utils_logger_py["src/utils/logger.py (CC: 27)"]:::danger
     src_utils_prompts_py["src/utils/prompts.py (CC: 7)"]:::safe

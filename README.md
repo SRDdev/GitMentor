@@ -1,8 +1,8 @@
+# GitMentor
+
 <p align="center">
   <img src="assets/banner.png" alt="GitMentor Banner" width="100%">
 </p>
-
-# GitMentor
 
 <p align="center">
   <img src="https://img.shields.io/badge/LangGraph-Orchestrated-blue">
@@ -17,6 +17,7 @@ GitMentor is a multi-agent system built on **LangGraph**, designed to bridge the
 ---
 
 ## System Vision
+
 GitMentor utilizes an artifact-driven workflow to maintain a "Compressed Context" model. Rather than feeding an entire codebase into an LLM, GitMentor's agents extract specific metrics and structures, passing only relevant artifacts downstream. This ensures high precision, lower token costs, and superior reasoning.
 
 ```mermaid
@@ -153,6 +154,16 @@ To get the most out of **GitMentor**, follow this professional engineering loop:
 
 ---
 
+## Quality Standards
+
+GitMentor's Code Steward enforces the following quality standards:
+
+*   **Cyclomatic Complexity Threshold:** Functions exceeding a complexity score of X will be flagged for review.
+*   **Unreachable Code Detection:** Identifies and reports any unreachable code blocks.
+*   **Dependency Management:** Enforces clear and well-defined module dependencies.
+*   **Documentation Completeness:** Ensures all public functions and classes have docstrings.
+
+---
 
 ## 🤖 GitHub Actions Integration
 To enable GitMentor to review your Pull Requests automatically, add your `GOOGLE_API_KEY` to your GitHub Repository Secrets and ensure the `.github/workflows/gitmentor.yml` is present.

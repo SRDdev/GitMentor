@@ -1,9 +1,0 @@
-refactor: General improvements and code quality enhancements
-
-This commit includes a series of general improvements across the project.
-
-- Updated `.gitignore` to streamline ignored files.
-- Refreshed architecture overview, code quality report, Git workflow, and commit message documentation in `.gitmentor_workspace/`.
-- Updated assets/banner.png, assets/logo.png, and main.py.
-
-The architecture overview and code quality report have been refreshed. The updated code quality report now contains zero issues.

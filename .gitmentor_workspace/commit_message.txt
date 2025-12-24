@@ -1,0 +1,9 @@
+feat(scribe): enhance PR and commit message generation
+
+This commit improves the PR and commit message generation process by leveraging commit logs and other contextual information.
+
+The changes include:
+- Incorporating commit history into the decision-making process of the Scribe agent.
+- Updating the architecture overview to reflect new dependencies and modules.
+- Refining the code quality report generation.
+- Adding .appmodconfig to .gitignore.
